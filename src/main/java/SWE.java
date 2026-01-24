@@ -13,17 +13,29 @@ public class SWE {
                 " Hello! I'm SWE\n" +
                 " What can I do for you?\uD83D\uDE00\n" +
                 "____________________________________________________________\n");
+        String[] userTask = new String[100];
+        int taskIndex = 0;
         String line;
         Scanner in = new Scanner(System.in);
         line = in.nextLine();
         while (!line.equals("bye")) {
-            System.out.print("____________________________________________________________\n" +
-                    line + "\n"+
-                    "____________________________________________________________\n");
+            System.out.print("____________________________________________________________\n");
+            if (!line.equals("list")) {
+                userTask[taskIndex] = line;
+                taskIndex++;
+                System.out.println("added: " + line);
+            }
+            else {
+                for (int i = 0; i<taskIndex; i++) {
+                    System.out.println((i+1) + ". " + userTask[i]);
+                }
+            }
+            System.out.print("____________________________________________________________\n");
             line = in.nextLine();
+
         }
         System.out.print("____________________________________________________________\n" +
-                        " Bye. Hope to see you again soon!\n" +
+                " Bye. Hope to see you again soon!\n" +
                 "____________________________________________________________\n");
     }
 }
