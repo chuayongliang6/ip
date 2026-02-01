@@ -6,6 +6,29 @@ public class SWE {
     public static final int TODO_PREFIX_LENGTH = 5;
     public static final int DEADLINE_PREFIX_LENGTH = 9;
     public static final int EVENT_PREFIX_LENGTH = 6;
+    public static final String DEADLINE_SEPARATOR = " /by ";
+    public static final String EVENT_SEPARATOR = " /from | /to ";
+
+    private static final String TODO_COMMAND = "todo ";
+    private static final String DEADLINE_COMMAND = "deadline ";
+    private static final String LIST_COMMAND = "list";
+    private static final String MARK_COMMAND = "mark ";
+    private static final String BYE_COMMAND = "bye";
+    private static final String BORDER = "____________________________________________________________\n";
+    private static final String LOGO = """
+ ____  __        __ _____
+/ ___| \\ \\      / /| ____|
+\\___ \\  \\ \\ /\\ / / |  _|  
+ ___) |  \\ V  V /  | |___ 
+|____/    \\_/\\_/   |_____|
+""";
+    private static final String WELCOME_MESSAGE = "Hello from\n" + LOGO + BORDER
+            + " Hello! I'm SWE\n"
+            + " What can I do for you?\uD83D\uDE00\n"
+            + BORDER;
+    private static final String GOODBYE_MESSAGE = BORDER
+            + " Bye. Hope to see you again soon!\n"
+            + BORDER;
 
     public static void main(String[] args) {
         printWelcome();
@@ -14,37 +37,41 @@ public class SWE {
     }
 
     private static void printGoodbye() {
-        System.out.print("____________________________________________________________\n" +
-                " Bye. Hope to see you again soon!\n" +
-                "____________________________________________________________\n");
+        System.out.print(GOODBYE_MESSAGE);
+    }
+
+    private static void printBorder() {
+        System.out.print(BORDER);
     }
 
     private static void processCommand() {
         Task[] userTasks = new Task[MAX_TASKS];
         int taskIndex = 0;
-        String line;
+
         Scanner in = new Scanner(System.in);
-        line = in.nextLine();
-        while (!line.equals("bye")) {
-            System.out.print("____________________________________________________________\n");
+        String line = in.nextLine();
+
+        while (!line.equals(BYE_COMMAND)) {
+            printBorder();
             taskIndex = handleCommand(line, taskIndex, userTasks);
-            System.out.print("____________________________________________________________\n");
+            printBorder();
             line = in.nextLine();
         }
     }
 
     private static int handleCommand(String line, int taskIndex, Task[] userTasks) {
-        // Listing tasks
-        if (line.equals("list")) {
+        if (line.equals(LIST_COMMAND)) {
             listTasks(taskIndex, userTasks);
-            //Marking tasks
-        } else if (line.startsWith("mark ")) {
-            markTasks(line, userTasks);
-            //Adding tasks
-        } else {
-            taskIndex = addTasks(userTasks, taskIndex, line);
+            return taskIndex;
         }
-        return taskIndex;
+
+        if (line.startsWith(MARK_COMMAND)) {
+            markTasks(line, userTasks);
+            return taskIndex;
+        }
+
+        // Adding tasks
+        return addTasks(userTasks, taskIndex, line);
     }
 
     private static int addTasks(Task[] userTasks, int taskIndex, String line) {
@@ -57,12 +84,15 @@ public class SWE {
     }
 
     private static void markTasks(String line, Task[] userTasks) {
-        String[] markNumber = line.split(" ");
-        // Minus 1 because if you mark task 2, it is at index 1
-        int markIndex = Integer.parseInt(markNumber[1]) - 1;
+        int markIndex = getMarkIndex(line);
         userTasks[markIndex].markAsDone();
         System.out.println("Nice! I've marked this task as done:");
         System.out.println(userTasks[markIndex].toString());
+    }
+
+    private static int getMarkIndex(String line) {
+        String[] parts = line.split(" ");
+        return Integer.parseInt(parts[1]) - 1;
     }
 
     private static void listTasks(int taskIndex, Task[] userTasks) {
@@ -73,30 +103,33 @@ public class SWE {
     }
 
     private static void printWelcome() {
-        //Gen AI was used to generate the logo
-        String logo = " ____  __        __ _____\n"
-                + "/ ___| \\ \\      / /| ____|\n"
-                + "\\___ \\  \\ \\ /\\ / / |  _|  \n"
-                + " ___) |  \\ V  V /  | |___ \n"
-                + "|____/    \\_/\\_/   |_____|\n";
-        System.out.println("Hello from\n" + logo);
-        System.out.print("____________________________________________________________\n" +
-                " Hello! I'm SWE\n" +
-                " What can I do for you?\uD83D\uDE00\n" +
-                "____________________________________________________________\n");
+        System.out.print(WELCOME_MESSAGE);
     }
 
     private static Task createTask(String input) {
-        if (input.startsWith("todo ")) {
-            return new Todo(input.substring(TODO_PREFIX_LENGTH));
-        } else if (input.startsWith("deadline ")) {
-            //Splits the remaining string (removed the command deadline) into the task and the deadline
-            String[] deadlineParts = input.substring(DEADLINE_PREFIX_LENGTH).split(" /by ");
-            return new Deadline(deadlineParts[0], deadlineParts[1]);
+        if (input.startsWith(TODO_COMMAND)) {
+            return parseTodo(input);
+        } else if (input.startsWith(DEADLINE_COMMAND)) {
+            return parseDeadline(input);
         } else {
-            String[] eventParts = input.substring(EVENT_PREFIX_LENGTH).split(" /from | /to ");
-            return new Event(eventParts[0], eventParts[1], eventParts[2]);
+            return parseEvent(input);
         }
+    }
+
+    private static Todo parseTodo(String input) {
+        return new Todo(input.substring(TODO_PREFIX_LENGTH));
+    }
+
+    private static Deadline parseDeadline(String input) {
+        String remaining = input.substring(DEADLINE_PREFIX_LENGTH);
+        String[] parts = remaining.split(DEADLINE_SEPARATOR);
+        return new Deadline(parts[0], parts[1]);
+    }
+
+    private static Event parseEvent(String input) {
+        String remaining = input.substring(EVENT_PREFIX_LENGTH);
+        String[] parts = remaining.split(EVENT_SEPARATOR);
+        return new Event(parts[0], parts[1], parts[2]);
     }
 
 }
