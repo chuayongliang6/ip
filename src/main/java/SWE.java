@@ -26,7 +26,7 @@ public class SWE {
                 for (int i = 0; i < taskIndex; i++) {
                     System.out.println((i + 1) + ". " + userTasks[i].toString());
                 }
-            //Marking tasks
+                //Marking tasks
             } else if (line.startsWith("mark ")) {
                 String[] markNumber = line.split(" ");
                 // Minus 1 because if you mark task 2, it is at index 1
@@ -34,11 +34,13 @@ public class SWE {
                 userTasks[markIndex].markAsDone();
                 System.out.println("Nice! I've marked this task as done:");
                 System.out.println(userTasks[markIndex].toString());
-            //Adding tasks
+                //Adding tasks
             } else {
-                userTasks[taskIndex] = new Task(line);
+                userTasks[taskIndex] = createTask(line);
+                System.out.println("Got it. I've added this task:");
+                System.out.println("  " + userTasks[taskIndex].toString());
                 taskIndex++;
-                System.out.println("added: " + line);
+                System.out.println("Now you have " + taskIndex + " tasks in the list.");
             }
             System.out.print("____________________________________________________________\n");
             line = in.nextLine();
@@ -47,4 +49,18 @@ public class SWE {
                 " Bye. Hope to see you again soon!\n" +
                 "____________________________________________________________\n");
     }
+
+    private static Task createTask(String input) {
+        if (input.startsWith("todo ")) {
+            return new Todo(input.substring(5));
+        } else if (input.startsWith("deadline ")) {
+            //Splits the remaining string (removed the command deadline) into the task and the deadline
+            String[] deadlineParts = input.substring(9).split(" /by ");
+            return new Deadline(deadlineParts[0], deadlineParts[1]);
+        } else {
+            String[] eventParts = input.substring(6).split(" /from | /to ");
+            return new Event(eventParts[0], eventParts[1], eventParts[2]);
+        }
+    }
+
 }
