@@ -1,5 +1,9 @@
 import java.util.Scanner;
 
+/**
+ * The main class for the SWE task management application.
+ * It handles user input and manages a list of tasks.
+ */
 public class SWE {
 
     public static final int MAX_TASKS = 100;
@@ -18,8 +22,8 @@ public class SWE {
     private static final String LOGO = """
  ____  __        __ _____
 / ___| \\ \\      / /| ____|
-\\___ \\  \\ \\ /\\ / / |  _|  
- ___) |  \\ V  V /  | |___ 
+\\___ \\  \\ \\ /\\ / / |  _|
+ ___) |  \\ V  V /  | |___
 |____/    \\_/\\_/   |_____|
 """;
     private static final String WELCOME_MESSAGE = "Hello from\n" + LOGO + BORDER
@@ -30,6 +34,10 @@ public class SWE {
             + " Bye. Hope to see you again soon!\n"
             + BORDER;
 
+    /**
+     * The entry point of the application. Prints a welcome message, processes user commands, and says goodbye.
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
         printWelcome();
         processCommand();
