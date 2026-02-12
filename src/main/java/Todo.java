@@ -12,10 +12,11 @@ public class Todo extends Task {
 
     /**
      * Returns a string representation of the todo task, including type indicator.
-     * @return the formatted string of the todo task
+     *
+     * @return the formatted string of the todo task.
      */
     @Override
     public String toString() {
-        return "[T]" + super.toString() ;
+        return "[T]" + super.toString();
     }
 }

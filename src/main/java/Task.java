@@ -7,7 +7,8 @@ public class Task {
 
     /**
      * Creates a new task with the given description, initially not done.
-     * @param description the description of the task
+     *
+     * @param description the description of the task.
      */
     public Task(String description) {
         this.description = description;
@@ -16,7 +17,8 @@ public class Task {
 
     /**
      * Returns an icon representing the task's completion status.
-     * @return "X" if done, otherwise a space
+     *
+     * @return "X" if done, otherwise a space.
      */
     public String getStatusIcon() {
         // Mark task as done using "X"
@@ -32,7 +34,8 @@ public class Task {
 
     /**
      * Returns a string representation of the task, including status icon and description.
-     * @return the formatted string of the task
+     *
+     * @return the formatted string of the task.
      */
     public String toString() {
         return "[" + getStatusIcon() + "] " + description;

@@ -7,26 +7,26 @@ import java.util.Scanner;
 public class SWE {
 
     public static final int MAX_TASKS = 100;
-    public static final int TODO_PREFIX_LENGTH = 5;
-    public static final int DEADLINE_PREFIX_LENGTH = 9;
-    public static final int EVENT_PREFIX_LENGTH = 6;
-    public static final String DEADLINE_SEPARATOR = " /by ";
-    public static final String EVENT_SEPARATOR = " /from | /to ";
+    public static final int TODO_PREFIX_LENGTH = 4;
+    public static final int DEADLINE_PREFIX_LENGTH = 8;
+    public static final int EVENT_PREFIX_LENGTH = 5;
+    public static final String DEADLINE_SEPARATOR = "/by";
+    public static final String EVENT_SEPARATOR = "\\s*/from\\s*|\\s*/to\\s*";
 
-    private static final String TODO_COMMAND = "todo ";
-    private static final String DEADLINE_COMMAND = "deadline ";
-    private static final String EVENT_COMMAND = "event ";
+    private static final String TODO_COMMAND = "todo";
+    private static final String DEADLINE_COMMAND = "deadline";
+    private static final String EVENT_COMMAND = "event";
     private static final String LIST_COMMAND = "list";
     private static final String MARK_COMMAND = "mark ";
     private static final String BYE_COMMAND = "bye";
     private static final String BORDER = "____________________________________________________________\n";
     private static final String LOGO = """
- ____  __        __ _____
-/ ___| \\ \\      / /| ____|
-\\___ \\  \\ \\ /\\ / / |  _|
- ___) |  \\ V  V /  | |___
-|____/    \\_/\\_/   |_____|
-""";
+             ____  __        __ _____
+            / ___| \\ \\      / /| ____|
+            \\___ \\  \\ \\ /\\ / / |  _|
+             ___) |  \\ V  V /  | |___
+            |____/    \\_/\\_/   |_____|
+            """;
     private static final String WELCOME_MESSAGE = "Hello from\n" + LOGO + BORDER
             + " Hello! I'm SWE\n"
             + " What can I do for you?\uD83D\uDE00\n"
@@ -37,6 +37,7 @@ public class SWE {
 
     /**
      * The entry point of the application. Prints a welcome message, processes user commands, and says goodbye.
+     *
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
@@ -70,7 +71,7 @@ public class SWE {
     }
 
     private static int handleCommand(String line, int taskIndex, Task[] userTasks) {
-
+        try {
             if (line.equals(LIST_COMMAND)) {
                 listTasks(taskIndex, userTasks);
                 return taskIndex;
@@ -80,9 +81,12 @@ public class SWE {
                 markTasks(line, userTasks);
                 return taskIndex;
             }
-
             // Adding tasks
             return addTasks(userTasks, taskIndex, line);
+        } catch (SWEException e) {
+            System.out.println(e.getMessage());
+            return taskIndex;
+        }
     }
 
     private static int addTasks(Task[] userTasks, int taskIndex, String line) throws SWEException {
@@ -117,19 +121,19 @@ public class SWE {
         System.out.print(WELCOME_MESSAGE);
     }
 
-    private static Task createTask(String input) throws SWEException{
+    private static Task createTask(String input) throws SWEException {
         if (input.startsWith(TODO_COMMAND)) {
             return parseTodo(input);
         } else if (input.startsWith(DEADLINE_COMMAND)) {
             return parseDeadline(input);
-        } else if  (input.startsWith(EVENT_COMMAND)) {
+        } else if (input.startsWith(EVENT_COMMAND)) {
             return parseEvent(input);
         } else {
             throw new SWEException("I'm sorry, but I don't know what that command means. Please input correct command.");
         }
     }
 
-    private static Todo parseTodo  (String input) throws SWEException {
+    private static Todo parseTodo(String input) throws SWEException {
         String description = input.substring(TODO_PREFIX_LENGTH).trim();
         if (description.isEmpty()) {
             throw new SWEException("The description of a todo cannot be empty.");
@@ -153,8 +157,8 @@ public class SWE {
         return new Deadline(parts[0], parts[1]);
     }
 
-    private static Event parseEvent (String input) throws SWEException {
-        if (!input.contains(" /from ") || !input.contains(" /to ")) {
+    private static Event parseEvent(String input) throws SWEException {
+        if (!input.contains("/from") || !input.contains("/to")) {
             throw new SWEException("An event must include both /from and /to.");
         }
         String remaining = input.substring(EVENT_PREFIX_LENGTH);
@@ -168,6 +172,7 @@ public class SWE {
         if (parts.length < 3 || parts[2].trim().isEmpty()) {
             throw new SWEException("The end timing (/to) cannot be empty.");
         }
-        return new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());    }
+        return new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
+    }
 
 }
