@@ -19,6 +19,7 @@ public class SWE {
     private static final String LIST_COMMAND = "list";
     private static final String MARK_COMMAND = "mark ";
     private static final String BYE_COMMAND = "bye";
+    private static final String DELETE_COMMAND = "delete";
     private static final String BORDER = "____________________________________________________________\n";
     private static final String LOGO = """
              ____  __        __ _____
@@ -75,7 +76,9 @@ public class SWE {
                 listTasks(userTasks);
             } else if (line.startsWith(MARK_COMMAND)) {
                 markTasks(line, userTasks);
-                // Adding tasks
+                // Delete tasks
+            } else if (line.startsWith(DELETE_COMMAND)) {
+                deleteTasks(line, userTasks);
             } else {
                 addTasks(userTasks, line);
             }
@@ -92,16 +95,25 @@ public class SWE {
     }
 
     private static void markTasks(String line, ArrayList<Task> userTasks) {
-        int markIndex = getMarkIndex(line);
+        int markIndex = getIndex(line);
         Task taskToMark = userTasks.get(markIndex);
         taskToMark.markAsDone();
         System.out.println("Nice! I've marked this task as done:");
         System.out.println(taskToMark.toString());
     }
 
-    private static int getMarkIndex(String line) {
+    private static int getIndex(String line) {
         String[] parts = line.split(" ");
         return Integer.parseInt(parts[1]) - 1;
+    }
+
+    private static void deleteTasks(String line, ArrayList<Task> userTasks) {
+        int deleteIndex = getIndex(line);
+        //Deletes the task and assigns deleted task to the deletedTask variable to print the deleted task details
+        Task deletedTask = userTasks.remove(deleteIndex);
+        System.out.println("Noted. I've removed this task: ");
+        System.out.println("  " + deletedTask.toString());
+        System.out.println("Now you have " + userTasks.size() + " tasks in the list.");
     }
 
     private static void addTasks(ArrayList<Task> userTasks, String line) throws SWEException {
