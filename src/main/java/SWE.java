@@ -56,7 +56,6 @@ public class SWE {
     }
 
     private static void loadTasks(ArrayList<Task> userTasks) {
-        int count = 0;
         try {
             File f = new File(FILE_PATH);
             //Creates directory if it does not exist
