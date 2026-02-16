@@ -154,7 +154,6 @@ public class SWE {
 
         while (!line.equals(BYE_COMMAND)) {
             printBorder();
-            //taskIndex only increments if the handleCommand involves adding tasks
             handleCommand(line, userTasks);
             printBorder();
             line = in.nextLine();
@@ -177,10 +176,10 @@ public class SWE {
                 deleteTasks(line, userTasks);
                 saveTasks(userTasks);
             } else {
+                // Adding tasks
                 addTasks(userTasks, line);
                 saveTasks(userTasks);
             }
-            // Adding tasks
         } catch (SWEException e) {
             System.out.println(e.getMessage());
         }
