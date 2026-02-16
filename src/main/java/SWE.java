@@ -1,3 +1,7 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
@@ -12,7 +16,7 @@ public class SWE {
     public static final int EVENT_PREFIX_LENGTH = 5;
     public static final String DEADLINE_SEPARATOR = "/by";
     public static final String EVENT_SEPARATOR = "\\s*/from\\s*|\\s*/to\\s*";
-
+    private static final String FILE_PATH = "data/duke.txt";
     private static final String TODO_COMMAND = "todo";
     private static final String DEADLINE_COMMAND = "deadline";
     private static final String EVENT_COMMAND = "event";
@@ -54,9 +58,53 @@ public class SWE {
         System.out.print(BORDER);
     }
 
+    private static int loadTasks(Task[] userTasks) {
+        int count = 0;
+        try {
+            File f = new File(FILE_PATH);
+            if (!f.exists()) {
+                return 0;
+            }
+
+            Scanner s = new Scanner(f);
+            //while loop means as long as there is more data to be read, ie as long as there are more lines in the text file, keep reading and converting to Task objects
+            while (s.hasNext()) {
+                //Reads one full line from the text file
+                String line = s.nextLine();
+                Task t = parseFileString(line); // Convert text back to object
+                if (t != null) {
+                    userTasks[count] = t;
+                    count++;
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + e.getMessage());
+        }
+        return count;
+    }
+
+    private static void saveTasks(Task[] userTasks, int taskIndex) {
+        try {
+            FileWriter fw = new FileWriter(FILE_PATH);
+            String textToAdd = "";
+
+            // Convert all tasks to string format
+            for (int i = 0; i < taskIndex; i++) {
+                textToAdd += taskToFileFormat(userTasks[i]) + System.lineSeparator();
+            }
+
+            fw.write(textToAdd);
+            fw.close();
+
+        } catch (IOException e) {
+            System.out.println("Something went wrong: " + e.getMessage());
+        }
+    }
+
     private static void processCommand() {
         Task[] userTasks = new Task[MAX_TASKS];
         int taskIndex = 0;
+        taskIndex = loadTasks(userTasks);
 
         Scanner in = new Scanner(System.in);
         String line = in.nextLine();
@@ -79,10 +127,13 @@ public class SWE {
 
             if (line.startsWith(MARK_COMMAND)) {
                 markTasks(line, userTasks);
+                saveTasks(userTasks, taskIndex);
                 return taskIndex;
             }
             // Adding tasks
-            return addTasks(userTasks, taskIndex, line);
+            int newIndex = addTasks(userTasks, taskIndex, line);
+            saveTasks(userTasks, newIndex);
+            return newIndex;
         } catch (SWEException e) {
             System.out.println(e.getMessage());
             return taskIndex;
