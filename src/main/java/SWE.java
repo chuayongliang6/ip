@@ -73,13 +73,10 @@ public class SWE {
         try {
             if (line.equals(LIST_COMMAND)) {
                 listTasks(userTasks);
-            }
-
-            if (line.startsWith(MARK_COMMAND)) {
+            } else if (line.startsWith(MARK_COMMAND)) {
                 markTasks(line, userTasks);
-            }
-            // Adding tasks
-            else {
+                // Adding tasks
+            } else {
                 addTasks(userTasks, line);
             }
         } catch (SWEException e) {
