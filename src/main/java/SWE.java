@@ -1,5 +1,4 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
@@ -16,7 +15,7 @@ public class SWE {
     public static final int EVENT_PREFIX_LENGTH = 5;
     public static final String DEADLINE_SEPARATOR = "/by";
     public static final String EVENT_SEPARATOR = "\\s*/from\\s*|\\s*/to\\s*";
-    private static final String FILE_PATH = "data/duke.txt";
+    private static final String FILE_PATH = "./data/duke.txt";
     private static final String TODO_COMMAND = "todo";
     private static final String DEADLINE_COMMAND = "deadline";
     private static final String EVENT_COMMAND = "event";
@@ -62,10 +61,15 @@ public class SWE {
         int count = 0;
         try {
             File f = new File(FILE_PATH);
-            if (!f.exists()) {
-                return 0;
+            //Creates directory if it does not exist
+            if (f.getParentFile() != null && !f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
             }
-
+            //Create file if it does not exist
+            if (!f.exists()) {
+                f.createNewFile(); // This physically creates the empty duke.txt file
+                return 0; // Return 0 because the new file is obviously empty
+            }
             Scanner s = new Scanner(f);
             //while loop means as long as there is more data to be read, ie as long as there are more lines in the text file, keep reading and converting to Task objects
             while (s.hasNext()) {
@@ -77,11 +81,40 @@ public class SWE {
                     count++;
                 }
             }
-        } catch (FileNotFoundException e) {
+            //includes errors for CreateNewFile and scanner which both involve IOException
+        } catch (IOException e) {
             System.out.println("File not found: " + e.getMessage());
         }
         return count;
     }
+
+    private static Task parseFileString(String line) {
+        String[] parts = line.split("\\|");
+        String type = parts[0];
+        boolean isDone = parts[1].equals("1");
+        String description = parts[2];
+        Task task;
+        switch (type) {
+        case "T":
+            task = new Todo(description);
+            break;
+        case "D":
+            //parts[3] is deadline
+            task = new Deadline(description, parts[3]);
+            break;
+        case "E":
+            //parts[3] is from, parts[4] is to
+            task = new Event(description, parts[3], parts[4]);
+            break;
+        default:
+            return null;
+        }
+        if (isDone) {
+            task.markAsDone();
+        }
+        return task;
+    }
+
 
     private static void saveTasks(Task[] userTasks, int taskIndex) {
         try {
@@ -101,17 +134,33 @@ public class SWE {
         }
     }
 
+    private static String taskToFileFormat(Task task) {
+        String type;
+        String additional = "";
+        if (task instanceof Todo) {
+            type = "T";
+        } else if (task instanceof Deadline) {
+            type = "D";
+            additional = "|" + ((Deadline) task).by;
+        } else if (task instanceof Event) {
+            type = "E";
+            additional = "|" + ((Event) task).from + "|" + ((Event) task).to;
+        } else {
+            return "";
+        }
+        return type + "|" + (task.isDone ? "1" : "0") + "|" + task.description + additional;
+    }
+
     private static void processCommand() {
         Task[] userTasks = new Task[MAX_TASKS];
-        int taskIndex = 0;
-        taskIndex = loadTasks(userTasks);
+        int taskIndex = loadTasks(userTasks);
 
         Scanner in = new Scanner(System.in);
         String line = in.nextLine();
 
         while (!line.equals(BYE_COMMAND)) {
             printBorder();
-            //taksIndex only increments if the handleCommand involves adding tasks
+            //taskIndex only increments if the handleCommand involves adding tasks
             taskIndex = handleCommand(line, taskIndex, userTasks);
             printBorder();
             line = in.nextLine();
