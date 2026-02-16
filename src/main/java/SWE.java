@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -6,7 +7,6 @@ import java.util.Scanner;
  */
 public class SWE {
 
-    public static final int MAX_TASKS = 100;
     public static final int TODO_PREFIX_LENGTH = 4;
     public static final int DEADLINE_PREFIX_LENGTH = 8;
     public static final int EVENT_PREFIX_LENGTH = 5;
@@ -46,63 +46,60 @@ public class SWE {
         printGoodbye();
     }
 
-    private static void printGoodbye() {
-        System.out.print(GOODBYE_MESSAGE);
-    }
-
-    private static void printBorder() {
-        System.out.print(BORDER);
+    private static void printWelcome() {
+        System.out.print(WELCOME_MESSAGE);
     }
 
     private static void processCommand() {
-        Task[] userTasks = new Task[MAX_TASKS];
-        int taskIndex = 0;
+        ArrayList<Task> userTasks = new ArrayList<>();
 
         Scanner in = new Scanner(System.in);
         String line = in.nextLine();
 
         while (!line.equals(BYE_COMMAND)) {
             printBorder();
-            //taksIndex only increments if the handleCommand involves adding tasks
-            taskIndex = handleCommand(line, taskIndex, userTasks);
+            //taskIndex only increments if the handleCommand involves adding tasks
+            handleCommand(line, userTasks);
             printBorder();
             line = in.nextLine();
         }
     }
 
-    private static int handleCommand(String line, int taskIndex, Task[] userTasks) {
+    private static void printBorder() {
+        System.out.print(BORDER);
+    }
+
+    private static void handleCommand(String line, ArrayList<Task> userTasks) {
         try {
             if (line.equals(LIST_COMMAND)) {
-                listTasks(taskIndex, userTasks);
-                return taskIndex;
+                listTasks(userTasks);
             }
 
             if (line.startsWith(MARK_COMMAND)) {
                 markTasks(line, userTasks);
-                return taskIndex;
             }
             // Adding tasks
-            return addTasks(userTasks, taskIndex, line);
+            else {
+                addTasks(userTasks, line);
+            }
         } catch (SWEException e) {
             System.out.println(e.getMessage());
-            return taskIndex;
         }
     }
 
-    private static int addTasks(Task[] userTasks, int taskIndex, String line) throws SWEException {
-        userTasks[taskIndex] = createTask(line);
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + userTasks[taskIndex].toString());
-        taskIndex++;
-        System.out.println("Now you have " + taskIndex + " tasks in the list.");
-        return taskIndex;
+    private static void listTasks(ArrayList<Task> userTasks) {
+        System.out.println("Here are the tasks in your list:");
+        for (int i = 0; i < userTasks.size(); i++) {
+            System.out.println((i + 1) + ". " + userTasks.get(i).toString());
+        }
     }
 
-    private static void markTasks(String line, Task[] userTasks) {
+    private static void markTasks(String line, ArrayList<Task> userTasks) {
         int markIndex = getMarkIndex(line);
-        userTasks[markIndex].markAsDone();
+        Task taskToMark = userTasks.get(markIndex);
+        taskToMark.markAsDone();
         System.out.println("Nice! I've marked this task as done:");
-        System.out.println(userTasks[markIndex].toString());
+        System.out.println(taskToMark.toString());
     }
 
     private static int getMarkIndex(String line) {
@@ -110,16 +107,14 @@ public class SWE {
         return Integer.parseInt(parts[1]) - 1;
     }
 
-    private static void listTasks(int taskIndex, Task[] userTasks) {
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < taskIndex; i++) {
-            System.out.println((i + 1) + ". " + userTasks[i].toString());
-        }
+    private static void addTasks(ArrayList<Task> userTasks, String line) throws SWEException {
+        Task newTask = createTask(line);
+        userTasks.add(newTask);
+        System.out.println("Got it. I've added this task:");
+        System.out.println("  " + newTask.toString());
+        System.out.println("Now you have " + userTasks.size() + " tasks in the list.");
     }
 
-    private static void printWelcome() {
-        System.out.print(WELCOME_MESSAGE);
-    }
 
     private static Task createTask(String input) throws SWEException {
         if (input.startsWith(TODO_COMMAND)) {
@@ -174,5 +169,10 @@ public class SWE {
         }
         return new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
     }
+
+    private static void printGoodbye() {
+        System.out.print(GOODBYE_MESSAGE);
+    }
+
 
 }
