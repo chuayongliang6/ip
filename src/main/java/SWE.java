@@ -1,5 +1,9 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 
 /**
  * The main class for the SWE task management application.
@@ -12,7 +16,7 @@ public class SWE {
     public static final int EVENT_PREFIX_LENGTH = 5;
     public static final String DEADLINE_SEPARATOR = "/by";
     public static final String EVENT_SEPARATOR = "\\s*/from\\s*|\\s*/to\\s*";
-
+    private static final String FILE_PATH = "./data/duke.txt";
     private static final String TODO_COMMAND = "todo";
     private static final String DEADLINE_COMMAND = "deadline";
     private static final String EVENT_COMMAND = "event";
@@ -51,8 +55,100 @@ public class SWE {
         System.out.print(WELCOME_MESSAGE);
     }
 
+    private static void loadTasks(ArrayList<Task> userTasks) {
+        int count = 0;
+        try {
+            File f = new File(FILE_PATH);
+            //Creates directory if it does not exist
+            if (f.getParentFile() != null && !f.getParentFile().exists()) {
+                f.getParentFile().mkdirs();
+            }
+            //Create file if it does not exist
+            if (!f.exists()) {
+                f.createNewFile(); // This physically creates the empty duke.txt file
+            }
+            Scanner s = new Scanner(f);
+            //while loop means as long as there is more data to be read, ie as long as there are more lines in the text file, keep reading and converting to Task objects
+            while (s.hasNext()) {
+                //Reads one full line from the text file
+                String line = s.nextLine();
+                Task t = parseFileString(line); // Convert text back to object
+                if (t != null) {
+                    userTasks.add(t);
+                }
+            }
+            //includes errors for CreateNewFile and scanner which both involve IOException
+        } catch (IOException e) {
+            System.out.println("File not found: " + e.getMessage());
+        }
+    }
+
+    private static Task parseFileString(String line) {
+        String[] parts = line.split("\\|");
+        String type = parts[0];
+        boolean isDone = parts[1].equals("1");
+        String description = parts[2];
+        Task task;
+        switch (type) {
+        case "T":
+            task = new Todo(description);
+            break;
+        case "D":
+            //parts[3] is deadline
+            task = new Deadline(description, parts[3]);
+            break;
+        case "E":
+            //parts[3] is from, parts[4] is to
+            task = new Event(description, parts[3], parts[4]);
+            break;
+        default:
+            return null;
+        }
+        if (isDone) {
+            task.markAsDone();
+        }
+        return task;
+    }
+
+
+    private static void saveTasks(ArrayList<Task> userTasks) {
+        try {
+            FileWriter fw = new FileWriter(FILE_PATH);
+            String textToAdd = "";
+
+            // Convert all tasks to string format
+            for (Task task : userTasks) {
+                textToAdd += taskToFileFormat(task) + System.lineSeparator();
+            }
+
+            fw.write(textToAdd);
+            fw.close();
+
+        } catch (IOException e) {
+            System.out.println("Something went wrong: " + e.getMessage());
+        }
+    }
+
+    private static String taskToFileFormat(Task task) {
+        String type;
+        String additional = "";
+        if (task instanceof Todo) {
+            type = "T";
+        } else if (task instanceof Deadline) {
+            type = "D";
+            additional = "|" + ((Deadline) task).by;
+        } else if (task instanceof Event) {
+            type = "E";
+            additional = "|" + ((Event) task).from + "|" + ((Event) task).to;
+        } else {
+            return "";
+        }
+        return type + "|" + (task.isDone ? "1" : "0") + "|" + task.description + additional;
+    }
+
     private static void processCommand() {
         ArrayList<Task> userTasks = new ArrayList<>();
+        loadTasks(userTasks);
 
         Scanner in = new Scanner(System.in);
         String line = in.nextLine();
@@ -76,12 +172,16 @@ public class SWE {
                 listTasks(userTasks);
             } else if (line.startsWith(MARK_COMMAND)) {
                 markTasks(line, userTasks);
+                saveTasks(userTasks);
                 // Delete tasks
             } else if (line.startsWith(DELETE_COMMAND)) {
                 deleteTasks(line, userTasks);
+                saveTasks(userTasks);
             } else {
                 addTasks(userTasks, line);
+                saveTasks(userTasks);
             }
+            // Adding tasks
         } catch (SWEException e) {
             System.out.println(e.getMessage());
         }
