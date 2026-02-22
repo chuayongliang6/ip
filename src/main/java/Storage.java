@@ -4,10 +4,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
+/**
+ * The Storage class is responsible for loading tasks from a file and saving tasks to a file.
+ * It provides methods to read tasks from a text file, convert them back into Task objects, and write the current list
+ * of tasks back to the file in a specific format.
+ *
+ */
 public class Storage {
     private static final String FILE_PATH = "./data/duke.txt";
 
+    /**
+     * Loads tasks from the specified file path and adds them to the provided list of user tasks.
+     *
+     * @param userTasks the list of tasks to which the loaded tasks will be added
+     * @throws IOException if there is an error reading the file or creating the file/directory
+     */
     public static void loadTasks(ArrayList<Task> userTasks) {
         try {
             File f = new File(FILE_PATH);
