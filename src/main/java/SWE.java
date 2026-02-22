@@ -193,9 +193,7 @@ public class SWE {
     private static void addTasks(ArrayList<Task> userTasks, String line) throws SWEException {
         Task newTask = createTask(line);
         userTasks.add(newTask);
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + newTask.toString());
-        System.out.println("Now you have " + userTasks.size() + " tasks in the list.");
+        Ui.printAddTask(newTask, userTasks);
     }
 
 
