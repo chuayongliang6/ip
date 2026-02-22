@@ -1,5 +1,6 @@
 public class Parser {
     public static final int TODO_PREFIX_LENGTH = 4;
+    public static final int FIND_PREFIX_LENGTH = 4;
     public static final int DEADLINE_PREFIX_LENGTH = 8;
     public static final int EVENT_PREFIX_LENGTH = 5;
     public static final String DEADLINE_SEPARATOR = "/by";
@@ -18,6 +19,14 @@ public class Parser {
         } else {
             throw new SWEException("I'm sorry, but I don't know what that command means. Please input correct command.");
         }
+    }
+
+    public static String parseFind(String input) throws SWEException {
+        String keyword = input.substring(FIND_PREFIX_LENGTH).trim();
+        if (keyword.isEmpty()) {
+            throw new SWEException("The keyword of a find function cannot be empty.");
+        }
+        return keyword;
     }
 
     private static Todo parseTodo(String input) throws SWEException {
