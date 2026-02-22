@@ -25,4 +25,16 @@ public class TaskList {
         Task deletedTask = userTasks.remove(deleteIndex);
         Ui.printDeleteTask(deletedTask, userTasks);
     }
+
+    public static void findTasks(String line, ArrayList<Task> userTasks) throws SWEException {
+        String keyword = Parser.parseFind(line);
+        Ui.printFindTaskHeader();
+        int count = 0;
+        for (Task task : userTasks) {
+            if (task.description.contains(keyword)) {
+                count += 1;
+                Ui.printFindTaskLoop(task, userTasks, count);
+            }
+        }
+    }
 }

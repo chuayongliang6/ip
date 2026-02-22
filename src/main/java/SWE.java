@@ -10,6 +10,7 @@ public class SWE {
     private static final String MARK_COMMAND = "mark ";
     private static final String BYE_COMMAND = "bye";
     private static final String DELETE_COMMAND = "delete";
+    private static final String FIND_COMMAND = "find";
 
     /**
      * The entry point of the application. Prints a welcome message, processes user commands, and says goodbye.
@@ -45,6 +46,8 @@ public class SWE {
             } else if (line.startsWith(DELETE_COMMAND)) {
                 TaskList.deleteTasks(line, userTasks);
                 Storage.saveTasks(userTasks);
+            } else if (line.startsWith(FIND_COMMAND)) {
+                TaskList.findTasks(line, userTasks);
             } else {
                 // Adding tasks
                 TaskList.addTasks(userTasks, line);
