@@ -60,5 +60,13 @@ public class Ui {
         System.out.println("  " + newTask.toString());
         System.out.println("Now you have " + userTasks.size() + " tasks in the list.");
     }
+
+    public static void printFindTaskHeader() {
+        System.out.println("Here are the matching tasks in your list:");
+    }
+
+    public static void printFindTaskLoop(Task foundTask, ArrayList<Task> userTasks, int count) {
+        System.out.println((count) + ". " + foundTask.toString());
+    }
 }
 
