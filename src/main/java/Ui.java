@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Ui {
@@ -36,5 +37,22 @@ public class Ui {
         System.out.print(GOODBYE_MESSAGE);
     }
 
+    public static void listTasks(ArrayList<Task> userTasks) {
+        System.out.println("Here are the tasks in your list:");
+        for (int i = 0; i < userTasks.size(); i++) {
+            System.out.println((i + 1) + ". " + userTasks.get(i).toString());
+        }
+    }
+
+    public static void printMarkTask(Task taskToMark) {
+        System.out.println("Nice! I've marked this task as done:");
+        System.out.println(taskToMark.toString());
+    }
+
+    public static void printDeleteTask(Task deletedTask, ArrayList<Task> userTasks) {
+        System.out.println("Noted. I've removed this task: ");
+        System.out.println("  " + deletedTask.toString());
+        System.out.println("Now you have " + userTasks.size() + " tasks in the list.");
+    }
 }
 

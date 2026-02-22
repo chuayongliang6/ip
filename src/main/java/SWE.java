@@ -49,6 +49,7 @@ public class SWE {
                 f.createNewFile(); // This physically creates the empty duke.txt file
             }
             Scanner s = new Scanner(f);
+            //read lines from text file
             //while loop means as long as there is more data to be read, ie as long as there are more lines in the text file, keep reading and converting to Task objects
             while (s.hasNext()) {
                 //Reads one full line from the text file
@@ -145,7 +146,7 @@ public class SWE {
     private static void handleCommand(String line, ArrayList<Task> userTasks) {
         try {
             if (line.equals(LIST_COMMAND)) {
-                listTasks(userTasks);
+                Ui.listTasks(userTasks);
             } else if (line.startsWith(MARK_COMMAND)) {
                 markTasks(line, userTasks);
                 saveTasks(userTasks);
@@ -163,19 +164,18 @@ public class SWE {
         }
     }
 
-    private static void listTasks(ArrayList<Task> userTasks) {
-        System.out.println("Here are the tasks in your list:");
-        for (int i = 0; i < userTasks.size(); i++) {
-            System.out.println((i + 1) + ". " + userTasks.get(i).toString());
-        }
-    }
+//    private static void listTasks(ArrayList<Task> userTasks) {
+//        System.out.println("Here are the tasks in your list:");
+//        for (int i = 0; i < userTasks.size(); i++) {
+//            System.out.println((i + 1) + ". " + userTasks.get(i).toString());
+//        }
+//    }
 
     private static void markTasks(String line, ArrayList<Task> userTasks) {
         int markIndex = getIndex(line);
         Task taskToMark = userTasks.get(markIndex);
         taskToMark.markAsDone();
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println(taskToMark.toString());
+        Ui.printMarkTask(taskToMark);
     }
 
     private static int getIndex(String line) {
@@ -187,9 +187,7 @@ public class SWE {
         int deleteIndex = getIndex(line);
         //Deletes the task and assigns deleted task to the deletedTask variable to print the deleted task details
         Task deletedTask = userTasks.remove(deleteIndex);
-        System.out.println("Noted. I've removed this task: ");
-        System.out.println("  " + deletedTask.toString());
-        System.out.println("Now you have " + userTasks.size() + " tasks in the list.");
+        Ui.printDeleteTask(deletedTask, userTasks);
     }
 
     private static void addTasks(ArrayList<Task> userTasks, String line) throws SWEException {
