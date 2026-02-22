@@ -1,3 +1,6 @@
+/**
+ * This class is responsible for parsing user input and creating corresponding Task objects.
+ */
 public class Parser {
     public static final int TODO_PREFIX_LENGTH = 4;
     public static final int FIND_PREFIX_LENGTH = 4;
@@ -9,6 +12,13 @@ public class Parser {
     private static final String DEADLINE_COMMAND = "deadline";
     private static final String EVENT_COMMAND = "event";
 
+    /**
+     * Parses the user input and creates a corresponding Task object based on the command type.
+     *
+     * @param input the user input string
+     * @return the created Task object
+     * @throws SWEException if the input format is invalid or the command is unrecognized
+     */
     public static Task createTask(String input) throws SWEException {
         if (input.startsWith(TODO_COMMAND)) {
             return parseTodo(input);
@@ -21,6 +31,14 @@ public class Parser {
         }
     }
 
+    /**
+     *
+     * Parses the user input for a find command and extracts the keyword to search for.
+     *
+     * @param input the user input string for the find command
+     * @return the keyword to search for
+     * @throws SWEException if the keyword is empty
+     */
     public static String parseFind(String input) throws SWEException {
         String keyword = input.substring(FIND_PREFIX_LENGTH).trim();
         if (keyword.isEmpty()) {
