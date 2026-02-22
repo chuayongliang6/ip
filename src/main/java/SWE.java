@@ -24,21 +24,7 @@ public class SWE {
     private static final String MARK_COMMAND = "mark ";
     private static final String BYE_COMMAND = "bye";
     private static final String DELETE_COMMAND = "delete";
-    private static final String BORDER = "____________________________________________________________\n";
-    private static final String LOGO = """
-             ____  __        __ _____
-            / ___| \\ \\      / /| ____|
-            \\___ \\  \\ \\ /\\ / / |  _|
-             ___) |  \\ V  V /  | |___
-            |____/    \\_/\\_/   |_____|
-            """;
-    private static final String WELCOME_MESSAGE = "Hello from\n" + LOGO + BORDER
-            + " Hello! I'm SWE\n"
-            + " What can I do for you?\uD83D\uDE00\n"
-            + BORDER;
-    private static final String GOODBYE_MESSAGE = BORDER
-            + " Bye. Hope to see you again soon!\n"
-            + BORDER;
+
 
     /**
      * The entry point of the application. Prints a welcome message, processes user commands, and says goodbye.
@@ -48,11 +34,11 @@ public class SWE {
     public static void main(String[] args) {
         printWelcome();
         processCommand();
-        printGoodbye();
+        Ui.printGoodbye();
     }
 
     private static void printWelcome() {
-        System.out.print(WELCOME_MESSAGE);
+        Ui.printWelcome();
     }
 
     private static void loadTasks(ArrayList<Task> userTasks) {
@@ -153,16 +139,13 @@ public class SWE {
         String line = in.nextLine();
 
         while (!line.equals(BYE_COMMAND)) {
-            printBorder();
+            Ui.printBorder();
             handleCommand(line, userTasks);
-            printBorder();
+            Ui.printBorder();
             line = in.nextLine();
         }
     }
 
-    private static void printBorder() {
-        System.out.print(BORDER);
-    }
 
     private static void handleCommand(String line, ArrayList<Task> userTasks) {
         try {
@@ -275,10 +258,6 @@ public class SWE {
             throw new SWEException("The end timing (/to) cannot be empty.");
         }
         return new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
-    }
-
-    private static void printGoodbye() {
-        System.out.print(GOODBYE_MESSAGE);
     }
 
 
