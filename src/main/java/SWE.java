@@ -32,13 +32,9 @@ public class SWE {
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
-        printWelcome();
+        Ui.printWelcome();
         processCommand();
         Ui.printGoodbye();
-    }
-
-    private static void printWelcome() {
-        Ui.printWelcome();
     }
 
     private static void loadTasks(ArrayList<Task> userTasks) {
@@ -134,15 +130,14 @@ public class SWE {
     private static void processCommand() {
         ArrayList<Task> userTasks = new ArrayList<>();
         loadTasks(userTasks);
+        String line = Ui.readCommand();
 
-        Scanner in = new Scanner(System.in);
-        String line = in.nextLine();
 
         while (!line.equals(BYE_COMMAND)) {
             Ui.printBorder();
             handleCommand(line, userTasks);
             Ui.printBorder();
-            line = in.nextLine();
+            line = Ui.readCommand();
         }
     }
 
