@@ -59,7 +59,7 @@ public class TaskList {
         for (Task task : userTasks) {
             if (task.description.contains(keyword)) {
                 count += 1;
-                Ui.printFindTaskLoop(task, userTasks, count);
+                Ui.printFindTaskLoop(task, count);
             }
         }
     }

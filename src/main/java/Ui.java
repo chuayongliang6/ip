@@ -98,7 +98,7 @@ public class Ui {
         System.out.println("Here are the matching tasks in your list:");
     }
 
-    public static void printFindTaskLoop(Task foundTask, ArrayList<Task> userTasks, int count) {
+    public static void printFindTaskLoop(Task foundTask, int count) {
         System.out.println((count) + ". " + foundTask.toString());
     }
 }
