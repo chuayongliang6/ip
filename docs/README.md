@@ -9,7 +9,7 @@ CLI).
 
 ## Getting Started
 
-1. Ensure you have Java 11 or above installed in your Computer.
+1. Ensure you have Java 17 installed in your Computer.
 2. Launch the application by running the main class `SWE.java`.
 3. The application will display a welcome message.
 4. Enter commands in the CLI to manage your tasks.
