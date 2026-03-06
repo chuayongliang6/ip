@@ -23,11 +23,7 @@ CLI).
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
   e.g. in `todo DESCRIPTION`, `DESCRIPTION` is a parameter which can be used as `todo read book`.
-* Items in square brackets are optional.<br>
-  e.g `find KEYWORD [MORE_KEYWORDS]` can be used as `find book` or as `find book journal`.
 * Parameters for task creation must follow the specified order of prefixes (e.g., `/by`, `/from`, `/to`).
-* Extraneous parameters for commands that do not take in parameters (such as `list` and `bye`) will be ignored.<br>
-  e.g. if the command specifies `list 123`, it will be interpreted as `list`.
 
 ---
 
@@ -99,16 +95,16 @@ Examples:
 
 Finds tasks whose descriptions contain any of the given keywords.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: `find KEYWORD`
 
 * The search is **case-sensitive**. e.g. `book` will not match `Book`.
 * Only the description is searched.
-* Tasks matching at least one keyword will be returned (i.e. OR search).
+* Tasks whose description contains the keyword will be returned.
 
 Examples:
 
 * `find book` returns `read book` and `buy book`
-* `find project meeting` returns `finish project`, `team meeting`
+* `find project meeting` returns `project meeting for CS2113`, `project meeting for CG2023`
 
 ### Exiting the program: `bye`
 
@@ -156,5 +152,5 @@ by editing that data file.
 | **List**     | `list`                                  | `list`                            |
 | **Mark**     | `mark INDEX`                            | `mark 1`                          |
 | **Delete**   | `delete INDEX`                          | `delete 2`                        |
-| **Find**     | `find KEYWORD [MORE_KEYWORDS]`          | `find book`                       |
+| **Find**     | `find KEYWORD`                          | `find project meeting`            |
 | **Bye**      | `bye`                                   | `bye`                             |
