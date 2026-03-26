@@ -49,6 +49,12 @@ public class Storage {
 
     private static Task parseFileString(String line) {
         String[] parts = line.split("\\|");
+
+        // Validate minimum required parts (type, isDone, description)
+        if (parts.length < 3) {
+            return null;
+        }
+
         String type = parts[0];
         boolean isDone = parts[1].equals("1");
         String description = parts[2];
@@ -58,10 +64,18 @@ public class Storage {
             task = new Todo(description);
             break;
         case "D":
+            // Validate that parts[3] exists for deadline
+            if (parts.length < 4) {
+                return null;
+            }
             //parts[3] is deadline
             task = new Deadline(description, parts[3]);
             break;
         case "E":
+            // Validate that parts[3] and parts[4] exist for event
+            if (parts.length < 5) {
+                return null;
+            }
             //parts[3] is from, parts[4] is to
             task = new Event(description, parts[3], parts[4]);
             break;

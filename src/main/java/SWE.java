@@ -26,12 +26,12 @@ public class SWE {
     private static void processCommand() {
         ArrayList<Task> userTasks = new ArrayList<>();
         Storage.loadTasks(userTasks);
-        String line = Ui.readCommand();
+        String line = Ui.readCommand().trim();
         while (!line.equals(BYE_COMMAND)) {
             Ui.printBorder();
             handleCommand(line, userTasks);
             Ui.printBorder();
-            line = Ui.readCommand();
+            line = Ui.readCommand().trim();
         }
     }
 

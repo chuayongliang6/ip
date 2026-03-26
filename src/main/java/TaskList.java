@@ -9,6 +9,9 @@ import java.util.ArrayList;
 public class TaskList {
     private static int getIndex(String line) throws SWEException {
         String[] parts = line.split(" ");
+        if (parts.length < 2) {
+            throw new SWEException("Please provide a task number.");
+        }
         try {
             int index = Integer.parseInt(parts[1]) - 1;
             return index;
@@ -56,6 +59,9 @@ public class TaskList {
      * @throws SWEException if the index is invalid or out of bounds
      */
     public static void deleteTasks(String line, ArrayList<Task> userTasks) throws SWEException {
+        if (userTasks.isEmpty()) {
+            throw new SWEException("Your task list is empty. Please add a task first.");
+        }
         int deleteIndex = getIndex(line);
         if (deleteIndex < 0 || deleteIndex >= userTasks.size()) {
             throw new SWEException("Invalid index. Please enter a number between 1 and " + userTasks.size() + ".");
