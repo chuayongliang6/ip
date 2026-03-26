@@ -7,9 +7,14 @@ import java.util.ArrayList;
  */
 
 public class TaskList {
-    private static int getIndex(String line) {
+    private static int getIndex(String line) throws SWEException {
         String[] parts = line.split(" ");
-        return Integer.parseInt(parts[1]) - 1;
+        try {
+            int index = Integer.parseInt(parts[1]) - 1;
+            return index;
+        } catch (NumberFormatException e) {
+            throw new SWEException("Invalid index. Please enter a valid number.");
+        }
     }
 
     /**
@@ -18,9 +23,13 @@ public class TaskList {
      *
      * @param line      the user input command containing the index of the task to be marked
      * @param userTasks the list of user tasks from which the task will be marked as
+     * @throws SWEException if the index is invalid or out of bounds
      */
-    public static void markTasks(String line, ArrayList<Task> userTasks) {
+    public static void markTasks(String line, ArrayList<Task> userTasks) throws SWEException {
         int markIndex = getIndex(line);
+        if (markIndex < 0 || markIndex >= userTasks.size()) {
+            throw new SWEException("Invalid index. Please enter a number between 1 and " + userTasks.size() + ".");
+        }
         Task taskToMark = userTasks.get(markIndex);
         taskToMark.markAsDone();
         Ui.printMarkTask(taskToMark);
@@ -44,10 +53,13 @@ public class TaskList {
      *
      * @param line      the user input command containing the index of the task to be deleted.
      * @param userTasks the list of user tasks from which the task will be deleted.
+     * @throws SWEException if the index is invalid or out of bounds
      */
-    public static void deleteTasks(String line, ArrayList<Task> userTasks) {
+    public static void deleteTasks(String line, ArrayList<Task> userTasks) throws SWEException {
         int deleteIndex = getIndex(line);
-        //Deletes the task and assigns deleted task to the deletedTask variable to print the deleted task details
+        if (deleteIndex < 0 || deleteIndex >= userTasks.size()) {
+            throw new SWEException("Invalid index. Please enter a number between 1 and " + userTasks.size() + ".");
+        }
         Task deletedTask = userTasks.remove(deleteIndex);
         Ui.printDeleteTask(deletedTask, userTasks);
     }
