@@ -59,6 +59,13 @@ public class Parser {
         if (!input.contains(DEADLINE_SEPARATOR)) {
             throw new SWEException("A deadline must include '" + DEADLINE_SEPARATOR + "'.");
         }
+
+        // Check for duplicate /by separators
+        int byCount = countOccurrences(input, DEADLINE_SEPARATOR);
+        if (byCount > 1) {
+            throw new SWEException("Duplicate /by separators found. Please provide only one /by with a single deadline.");
+        }
+
         String remaining = input.substring(DEADLINE_PREFIX_LENGTH);
         String[] parts = remaining.split(DEADLINE_SEPARATOR);
         //check the description is not empty
@@ -75,6 +82,24 @@ public class Parser {
         if (!input.contains("/from") || !input.contains("/to")) {
             throw new SWEException("An event must include both /from and /to.");
         }
+
+        // Check for duplicate /from or /to separators
+        int fromCount = countOccurrences(input, "/from");
+        int toCount = countOccurrences(input, "/to");
+        if (fromCount > 1) {
+            throw new SWEException("Duplicate /from separators found. Please provide only one /from with a single start time.");
+        }
+        if (toCount > 1) {
+            throw new SWEException("Duplicate /to separators found. Please provide only one /to with a single end time.");
+        }
+
+        // Check if /from comes before /to
+        int fromIndex = input.indexOf("/from");
+        int toIndex = input.indexOf("/to");
+        if (toIndex < fromIndex) {
+            throw new SWEException("Event format error: /from must come before /to. Please re-enter.");
+        }
+
         String remaining = input.substring(EVENT_PREFIX_LENGTH);
         String[] parts = remaining.split(EVENT_SEPARATOR);
         if (parts.length < 1 || parts[0].trim().isEmpty()) {
@@ -87,6 +112,28 @@ public class Parser {
             throw new SWEException("The end timing (/to) cannot be empty.");
         }
         return new Event(parts[0].trim(), parts[1].trim(), parts[2].trim());
+    }
+
+    /**
+     * Counts the number of occurrences of a separator in a string.
+     *
+     * @param input     The input string to search in.
+     * @param separator The separator string to count.
+     * @return The number of times the separator appears in the input.
+     */
+    private static int countOccurrences(String input, String separator) {
+        int count = 0;
+        int index = 0;
+        // Find the first occurrence of the separator starting from the beginning
+        index = input.indexOf(separator, index);
+        while (index != -1) {
+            count++;
+            // Move index past the current match to avoid counting it again
+            index += separator.length();
+            // Find the next occurrence starting from the updated index
+            index = input.indexOf(separator, index);
+        }
+        return count;
     }
 
 }

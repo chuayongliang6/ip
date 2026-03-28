@@ -97,7 +97,8 @@ Finds tasks whose descriptions contain any of the given keywords.
 
 Format: `find KEYWORD`
 
-* The search is **case-sensitive**. e.g. `book` will not match `Book`.
+* The search is **case-sensitive** and performs a **substring match**. For example, `find read book` will only match
+  tasks containing "read book" as consecutive words, not tasks with "read" and "book" separately.
 * Only the description is searched.
 * Tasks whose description contains the keyword will be returned.
 

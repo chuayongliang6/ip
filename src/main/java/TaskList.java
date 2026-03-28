@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class TaskList {
     private static int getIndex(String line) throws SWEException {
-        String[] parts = line.split(" ");
+        String[] parts = line.trim().split("\\s+");
         if (parts.length < 2) {
             throw new SWEException("Please provide a task number.");
         }
@@ -29,6 +29,9 @@ public class TaskList {
      * @throws SWEException if the index is invalid or out of bounds
      */
     public static void markTasks(String line, ArrayList<Task> userTasks) throws SWEException {
+        if (userTasks.isEmpty()) {
+            throw new SWEException("Your task list is empty. Please add a task first.");
+        }
         int markIndex = getIndex(line);
         if (markIndex < 0 || markIndex >= userTasks.size()) {
             throw new SWEException("Invalid index. Please enter a number between 1 and " + userTasks.size() + ".");
