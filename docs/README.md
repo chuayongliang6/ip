@@ -93,7 +93,7 @@ Examples:
 
 ### Locating tasks by keyword: `find`
 
-Finds tasks whose descriptions contain any of the given keywords.
+Locate tasks whose descriptions containing the exact phrase provided.
 
 Format: `find KEYWORD`
 
